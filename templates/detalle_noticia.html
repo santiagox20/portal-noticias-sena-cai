@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ noticia.titulo }} | SENA CAI Regional Valle{% endblock %}
+
+{% block content %}
+<div class="mb-3 d-flex justify-content-between align-items-center">
+    <a href="{% url 'inicio' %}" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left me-1"></i>Volver al Portal de Noticias
+    </a>
+    <a href="{% url 'tabla_noticias' %}" class="btn btn-outline-primary btn-sm">
+        <i class="bi bi-table me-1"></i>Ver Archivo General
+    </a>
+</div>
+
+<div class="row g-4">
+    <!-- Columna Principal de la Noticia -->
+    <div class="col-lg-8">
+        <article class="card border-0 shadow-sm rounded-3 overflow-hidden">
+            {% if noticia.imagen %}
+                <img src="{{ noticia.imagen.url }}" class="img-fluid w-100" style="max-height: 450px; object-fit: cover;" alt="{{ noticia.titulo }}">
+            {% endif %}
+            <div class="card-body p-4 p-md-5">
+                <div class="d-flex flex-wrap gap-2 mb-3">
+                    <span class="badge badge-sena px-3 py-2">
+                        <i class="bi bi-calendar-check me-1"></i>Ocurrido el: {{ noticia.fecha_ocurrencia|date:"d \d\e F \d\e Y" }}
+                    </span>
+                    <span class="badge bg-dark px-3 py-2">
+                        <i class="bi bi-geo-alt me-1"></i>Lugar: {{ noticia.lugar }}
+                    </span>
+                </div>
+
+                <h1 class="h2 fw-bold text-dark mb-4">{{ noticia.titulo }}</h1>
+
+                <div class="fs-5 text-body lh-lg" style="white-space: pre-line;">
+                    {{ noticia.descripcion }}
+                </div>
+            </div>
+        </article>
+    </div>
+
+    <!-- Barra Lateral: Otras Noticias Recientes -->
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm rounded-3">
+            <div class="card-header bg-white fw-bold py-3">
+                <i class="bi bi-clock-history text-success me-1"></i>Otras Noticias Recientes
+            </div>
+            <div class="list-group list-group-flush">
+                {% for item in recientes %}
+                    <a href="{% url 'detalle_noticia' item.id %}" class="list-group-item list-group-item-action py-3">
+                        <div class="d-flex gap-3 align-items-center">
+                            {% if item.imagen %}
+                                <img src="{{ item.imagen.url }}" alt="{{ item.titulo }}" style="width: 65px; height: 65px; object-fit: cover; border-radius: 8px;">
+                            {% endif %}
+                            <div>
+                                <small class="text-muted d-block">{{ item.fecha_ocurrencia|date:"d M Y" }} • {{ item.lugar }}</small>
+                                <span class="fw-semibold text-dark">{{ item.titulo|truncatechars:55 }}</span>
+                            </div>
+                        </div>
+                    </a>
+                {% empty %}
+                    <div class="p-3 text-muted small">No hay más noticias publicadas todavía.</div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
